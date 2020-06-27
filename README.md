@@ -30,31 +30,55 @@ PREREQUISITES :-
 
 Be sure you have the following installed on your development machine:
 
-    XAMPP Server, Wordpress installed in C:/xampp/wordpress
+    XAMPP Server, Wordpress installed
 
 ---------------------------------------------------------------------------------------------------------------------------
 STEPS TO MAKE IT RUN LOCALLY :-
 ---------------------------------------------------------------------------------------------------------------------------
 
+// Theme and Code+DB Setup
+
+Procedure 1 :- (Via Github)
+
 1. Go to Appearance->Themes in wordpress admin panel and install the theme 'Twenty Sixteen' by searching for it. Activate the theme once installed.
 
-2. a) Inittialize a git repo in root folder of your wordpress installation (For ex- C:/xampp/wordpress in my case) via 'git init'
+2. a) Initialize a git repo in root folder of your wordpress installation (For ex- C:/xampp/htdocs/wordpress in my case) via 'git init' 
+   if it's not so and if it's so then make sure that wp-content/themes/twentysixteen/ theme is not ignored in .gitignore. 
 
-   b) Add a new origin say named 'customform' with remote url being that of shared repo 'https://github.com/lakshay3697/Wordpress-Custom-Template.git' via 'git remote add customform https://github.com/lakshay3697/Wordpress-Custom-Template.git'
+   b) Add a new remote say named 'customform' with remote url being that of shared repo 'https://github.com/lakshay3697/Wordpress-Custom-Template.git' via 'git remote add customform https://github.com/lakshay3697/Wordpress-Custom-Template.git' 
 
-   c) Pull changes from the remote - git pull customform master
+   c) Pull changes from the remote - 'git pull customform master' (Resolve merge conflicts with functions.php file :-
 
-3. Add a new page to theme via wordpress admin panel and make sure the following two things :- 
+   	  i)  If wp-content/themes/twentysixteen/functions.php is untracked then simply delete it to resolve conflict and take a pull again
+
+   	  ii) If anyhow it's tracked then checkout your local version of file to resolve conflict and take a pull again.
+
+    )
+
+    d) Import the 'custom-form-response.sql' either pulled via github with the changes or one shared in compressed 'Twentysixteen' theme folder in your wordpress database.
+
+Procedure 2 :- (Via Theme Folder Upload)
+
+1. Unzip the shared compressed 'Twentysixteen' theme folder inside 'wp-content/themes' directory of your wordpress installation and activate this 'Twenty Sixteen' theme via wordpress admin panel.
+
+2. Import the 'custom-form-response.sql' shared in compressed 'Twentysixteen' theme folder in your wordpress database.
+
+
+// Permalink settings and wordpress template creation
+
+
+1. Make sure your Permalink settings in wordpress are set to 'Day and Name' option. (Browse to Settings->Permalink option in wordpress admin panel and select 'Day and Name')
+
+2. Add a new page to theme via wordpress admin panel and make sure the following two things :- 
     
     a) Template is set to 'CustomForm' in Page Attributes->Template setting.
-    b) Url Slug is set to 'custom-form' in Permalink setting.
+    b) Url Slug is set to 'custom-form' in Permalink setting for this page .
 
-4. Add another page to theme via wordpress admin panel and make sure the following two things :- 
+3. Add another page to theme via wordpress admin panel and make sure the following two things :- 
     
     a) Template is set to 'CustomFormRedirect' in Page Attributes->Template setting.
-    b) Url Slug is set to 'custom-form-redirect' in Permalink setting.
+    b) Url Slug is set to 'custom-form-redirect' in Permalink setting for this page.
 
-5. Import 'custom-form-response.sql' in wordpress database.
 
 Now browse to localhost/wordpress/custom-form to see the custom template in action!
 
