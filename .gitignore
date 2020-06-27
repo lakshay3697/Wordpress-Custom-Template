@@ -27,7 +27,5 @@ node_modules/
 
 # ignore log files and databases
 *.log
-*.sql
-*.sqlite
 
 # End of https://www.toptal.com/developers/gitignore/api/wordpress
