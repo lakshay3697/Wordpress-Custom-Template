@@ -1,5 +1,9 @@
 <?php
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
 add_action('wp_ajax_set_form', 'set_form');    //execute when wp logged in
 add_action('wp_ajax_nopriv_set_form', 'set_form'); //execute when logged out
 
@@ -65,15 +69,14 @@ function set_form()
 
 
 		if (!$error_flag) {
-			
+
 			// User existence check and if in case user doesn't exist then insert one 
 
 			$user_existence_query =  "SELECT * FROM custom_form_response WHERE email = '" . $email . "'";
 
 			$resp = $wpdb->get_results($user_existence_query);
 
-			if(count($resp)==0)
-			{
+			if (count($resp) == 0) {
 				$generated_otp = generateNumericOTP(6); // Generate a random 6 digit OTP
 
 				$insert_sql = $wpdb->insert(
@@ -85,12 +88,12 @@ function set_form()
 						'latest_otp' => $generated_otp,
 					)
 				);
-	
+
 				if ($insert_sql) {
-	
+
 					// Send mail to user with otp
 					$email_resp = send_mail($name, $email, $generated_otp);
-	
+
 					if ($email_resp) {
 						echo json_encode(array("STATUS" => "success", "message" => "User details inserted and OTP sent on mail!", "user" => $email, "fallback_verification" => base64_encode($generated_otp)));
 						die;
@@ -102,14 +105,10 @@ function set_form()
 					echo json_encode(array("STATUS" => "error", "message" => "User details couldn't be inserted!"));
 					die;
 				}
-			}
-			else
-			{
+			} else {
 				echo json_encode(array("STATUS" => "error", "message" => "User/Email already exists!"));
 				die;
 			}
-
-			
 		}
 	} elseif ($_POST['req_type'] == 'verify_otp') {
 
@@ -129,17 +128,13 @@ function set_form()
 
 		$db_otp = $resp[0]->latest_otp;
 
-		if($otp==$db_otp)
-		{
+		if ($otp == $db_otp) {
 			echo json_encode(array("STATUS" => "success", "message" => "OTP is valid! User Verified."));
 			die;
-		}
-		else
-		{
+		} else {
 			echo json_encode(array("STATUS" => "error", "message" => "OTP mismatch! Enter a valid OTP."));
 			die;
 		}
-
 	}
 
 	die;
@@ -171,7 +166,6 @@ function themebs_enqueue_styles()
 
 	wp_enqueue_style('bootstrap', get_template_directory_uri() . '/css/bootstrap.min.css');
 	wp_enqueue_style('toastr', get_template_directory_uri() . '/css/toastr.min.css');
-
 }
 add_action('wp_enqueue_scripts', 'themebs_enqueue_styles');
 
@@ -186,22 +180,39 @@ function send_mail($name, $recp_email, $otp)
 {
 	require 'vendor/autoload.php';
 
-	$email = new \SendGrid\Mail\Mail();
-	$email->setFrom("lakshay3697@gmail.com", "Lakshay Sharma");
-	$email->setSubject("Your OTP for custom wordpress template module");
-	$email->addTo($recp_email, ucwords($name));
-	$email->addContent(
-		"text/html",
-		"<p> Hi " . ucwords($name) . ",</p><p>Your OTP for custom wordpress template module is :- </p><h4>" . $otp . "</h4>"
-	);
-	$sendgrid = new \SendGrid('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');
+	$mail = new PHPMailer(true);
 
 	try {
-		$sendgrid->send($email);
-		return 1;
+		//Server settings
+		$mail->isSMTP();                                            // Send using SMTP
+		$mail->Host       = 'smtp.gmail.com';                    // Set the SMTP server to send through
+		$mail->SMTPAuth   = true;                                   // Enable SMTP authentication
+		$mail->Username   = 'lakshay3697@gmail.com';                     // SMTP username
+		$mail->Password   = 'tamashbeen';                               // SMTP password
+		$mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;         // Enable TLS encryption; `PHPMailer::ENCRYPTION_SMTPS` encouraged
+		$mail->Port       = 587;                                    // TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
+
+		//Recipients
+		$mail->setFrom('lakshay3697@gmail.com', 'Lakshay Sharma');
+
+		$mail->addAddress($recp_email, ucwords($name));               // Name is optional
+
+		// Content
+		$mail->isHTML(true);                                  // Set email format to HTML
+		$mail->Subject = 'Your OTP for custom wordpress template module';
+		$mail->Body    = "<p> Hi " . ucwords($name) . ",</p><p>Your OTP for custom wordpress template module is :- </p><h4>" . $otp . "</h4>";
+
+		if($mail->send())
+		{
+			return 1;
+		}
+		else
+		{
+			return 0;
+		}
 	} catch (Exception $e) {
 		return 0;
 	}
-}
 
-?>
+	die;
+}
