@@ -49,7 +49,7 @@ Procedure 1 :- (Via Github)
 
    c) Pull changes from the remote - 'git pull customform master' (Resolve merge conflicts with functions.php file :-
 
-   	  i)  If wp-content/themes/twentysixteen/functions.php is untracked then simply delete it to resolve conflict and take a pull again
+   	  i) *) If wp-content/themes/twentysixteen/functions.php is untracked then simply delete it to resolve conflict and take a pull again
 
    	  ii) If anyhow it's tracked then checkout your local version of file to resolve conflict and take a pull again.
 
@@ -67,17 +67,17 @@ Procedure 2 :- (Via Theme Folder Upload)
 // Permalink settings and wordpress template creation
 
 
-1. Make sure your Permalink settings in wordpress are set to 'Day and Name' option. (Browse to Settings->Permalink option in wordpress admin panel and select 'Day and Name')
+1. Make sure your Permalink settings in wordpress are such that the two pages/templates specified below have specified urls when these pages are created. (For ex :- Making sure that wordpress permalink settings (Settings->Permalinks) are set to 'Day and name' option works for me.)
 
 2. Add a new page to theme via wordpress admin panel and make sure the following two things :- 
     
     a) Template is set to 'CustomForm' in Page Attributes->Template setting.
-    b) Url Slug is set to 'custom-form' in Permalink setting for this page .
+    b) Url Slug is set to 'custom-form' in Permalink setting for this page so that the page url becomes 'http://localhost/wordpress/custom-form/'
 
 3. Add another page to theme via wordpress admin panel and make sure the following two things :- 
     
     a) Template is set to 'CustomFormRedirect' in Page Attributes->Template setting.
-    b) Url Slug is set to 'custom-form-redirect' in Permalink setting for this page.
+    b) Url Slug is set to 'custom-form-redirect' in Permalink setting for this page so that the page url becomes 'http://localhost/wordpress/custom-form-redirect/'
 
 
 Now browse to localhost/wordpress/custom-form to see the custom template in action!
